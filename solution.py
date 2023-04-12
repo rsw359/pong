@@ -2,6 +2,8 @@ import pygame
 
 pygame.init()  # initializes pygame
 
+
+GREY = (128, 128, 128)
 WHITE = (255, 255, 255)  # sets the color white
 BLACK = (0, 0, 0)  # sets the color black
 FPS = 60  # sets the fps of the game
@@ -37,6 +39,23 @@ def draw_window(win, paddles):  # draws the window and all the objects in the wi
     win.fill(BLACK)  # fills the window with blac
     for paddle in paddles:
         paddle.draw(win)
+
+    # Define the color and size of the divider circles
+    circle_color = GREY
+    circle_radius = HEIGHT // 200
+
+    # Define the spacing between the divider circles
+    circle_spacing = circle_radius * 4
+
+    # Loop through the screen height with the given spacing
+    for i in range(circle_radius, HEIGHT, circle_spacing):
+        # Draw a circle at the current position
+        pygame.draw.circle(win, circle_color, (WIDTH//2, i), circle_radius)
+
+    # for i in range(20, HEIGHT, HEIGHT//20):
+    #     if i % 2 == 0:
+    #         continue
+    #     pygame.draw.rect(win, WHITE, (WIDTH//2 - 5, i, 10, HEIGHT//20))
     # updates the window with the new changes in this window function
     pygame.display.update()
 
@@ -47,15 +66,14 @@ def handle_paddle_movement(keys, left_paddle, right_paddle):
     if keys[pygame.K_s] and left_paddle.y + left_paddle.VEL + left_paddle.height <= HEIGHT:  # if the s key is pressed
         left_paddle.move(up=False)  # moves the left paddle down
 
-    if keys[pygame.K_UP] and right_paddle.y - left_paddle.VEL >= 0:  # if the up arrow key is pressed
+    if keys[pygame.K_UP] and right_paddle.y - right_paddle.VEL >= 0:  # if the up arrow key is pressed
         right_paddle.move(up=True)  # moves the right paddle up
     # if the down arrow key is pressed
-    if keys[pygame.K_DOWN] and right_paddle.y + left_paddle.VEL + left_paddle.height <= HEIGHT:
+    if keys[pygame.K_DOWN] and right_paddle.y + right_paddle.VEL + left_paddle.height <= HEIGHT:
         right_paddle.move(up=False)  # moves the right paddle down
 
+
 # event loop
-
-
 def main():
     run = True
     # creates a clock object that determines the fps of the game
