@@ -8,7 +8,7 @@ This is a basic Python game written with Pygame. The goal is to write out the ba
 
 Basic Functionality
 
-Pong! with basic keyboard inputs. 
+Pong! with basic keyboard inputs.
 
 Trained Neural Network that can play the game with medium accuracy. (Players should be able to win!)
 
