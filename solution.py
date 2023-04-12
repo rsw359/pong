@@ -21,14 +21,15 @@ class Paddle:
         self.width = width
         self.height = height
 
-        def draw(self, win):  # draws the paddle
-            pygame.draw.rectangle(
-                win, self.COLOR, (self.x, self.y, self.width, self.height)
-            )
+    def draw(self, win):  # draws the paddle
+        pygame.draw.rectangle(
+            win, self.COLOR, (self.x, self.y, self.width, self.height))
 
 
-def draw_window(win):  # draws the window
-    win.fill(BLACK)  # fills the window with black
+def draw_window(win, paddles):  # draws the window and all the objects in the window
+    win.fill(BLACK)  # fills the window with blac
+    for paddle in paddles:
+        paddle.draw(win)
     # updates the window with the new changes in this window function
     pygame.display.update()
 
@@ -39,10 +40,13 @@ def main():
     # creates a clock object that determines the fps of the game
     clock = pygame.time.Clock()
 
-    left_paddle = Paddle(10, HEIGHT // 2 - PADDLE_HEIGHT // 2)
-    draw_window(WIN)
+    left_paddle = Paddle(10, HEIGHT // 2 - PADDLE_HEIGHT //
+                         2, PADDLE_WIDTH, PADDLE_HEIGHT)
+    right_paddle = Paddle(WIDTH - 10 - PADDLE_WIDTH, HEIGHT //
+                          2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
     while run:  # main loop that runs the game
         clock.tick(FPS)  # sets the fps of the game, cannot go over the fps
+        draw_window(WIN, [left_paddle, right_paddle])
 
         for (event) in pygame.event.get():  # loops through all the events that happen in the game
             if event.type == pygame.QUIT:  # if the event is the user clicking the x button and closes the game
