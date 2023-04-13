@@ -12,11 +12,12 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))  # sets the size of the window
 BALL_RADIUS = 7
 # sets the font of the score
 SCORE_FONT = pygame.font.Font("fonts/neon-80s/Neon.ttf", 30)
-# SCORE_FONT = pygame.font.SysFont("comicsans", 50)
+WIN_SCORE_FONT = pygame.font.Font("fonts/neon-80s/Neon.ttf", 50)
 
 pygame.display.set_caption("Pong!")  # sets the title of the window
 
 PADDLE_HEIGHT, PADDLE_WIDTH = 100, 20
+WINNING_SCORE = 2  # sets the winning score to 10
 
 
 class Paddle:
@@ -184,6 +185,28 @@ def main():
         elif ball.x > WIDTH:
             left_score += 1
             ball.reset()
+
+        won = False
+        if left_score >= WINNING_SCORE:
+            won = True
+            win_message = 'Left Player Wins!'
+        elif right_score >= WINNING_SCORE:
+            won = True
+            win_message = 'Right Player Wins!'
+
+        if won:
+            # creates a text object
+            text = WIN_SCORE_FONT.render(win_message, 1, GREEN)
+            WIN.blit(text, (WIDTH//2 - text.get_width() //  # blits the text to the window
+                     2, HEIGHT//2 - text.get_height()//2))
+            pygame.display.update()  # updates the display to add the text
+            # delays the game for 5 seconds, allows the user to see the winning message
+            pygame.time.delay(5000)
+            ball.reset()
+            left_paddle.reset()
+            right_paddle.reset()
+            left_score = 0
+            right_score = 0
 
     pygame.quit()
 
