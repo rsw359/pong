@@ -90,11 +90,21 @@ def handle_collision(ball, left_paddle, right_paddle):
             if ball.x - ball.radius <= left_paddle.x + left_paddle.width:
                 ball.x_vel *= -1
 
+                middle_y = left_paddle.y + left_paddle.height / 2
+                y_difference = middle_y - ball.y
+                reduction_factor = (left_paddle.height//2) / ball.MAX_VEL
+                ball.y_vel = -1 * y_difference / reduction_factor
+
     else:
         if ball.y >= right_paddle.y and ball.y <= right_paddle.y + right_paddle.height:
             # checking the ball  position against the left corner of the paddle
             if ball.x + ball.radius >= right_paddle.x:
                 ball.x_vel *= -1
+
+                middle_y = right_paddle.y + right_paddle.height / 2
+                y_difference = middle_y - ball.y
+                reduction_factor = (right_paddle.height//2) / ball.MAX_VEL
+                ball.y_vel = -1 * y_difference / reduction_factor
 
 
 def handle_paddle_movement(keys, left_paddle, right_paddle):
