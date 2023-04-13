@@ -76,6 +76,27 @@ def draw_window(win, paddles, ball):  # draws the window and all the objects in 
     pygame.display.update()
 
 
+def handle_collision(ball, left_paddle, right_paddle):
+    # ceiling collision
+    if ball.y + ball.radius >= HEIGHT:
+        ball.y_vel *= -1  # reverses the y direction of the ball
+    elif ball.y - ball.radius <= 0:
+        ball.y_vel *= -1
+
+    # paddle collision
+    if ball.x_vel < 0:
+        if ball.y >= left_paddle.y and ball.y <= left_paddle.y + left_paddle.height:
+            # checking the ball  position against the right corner of the paddle
+            if ball.x - ball.radius <= left_paddle.x + left_paddle.width:
+                ball.x_vel *= -1
+
+    else:
+        if ball.y >= right_paddle.y and ball.y <= right_paddle.y + right_paddle.height:
+            # checking the ball  position against the left corner of the paddle
+            if ball.x + ball.radius >= right_paddle.x:
+                ball.x_vel *= -1
+
+
 def handle_paddle_movement(keys, left_paddle, right_paddle):
     if keys[pygame.K_w] and left_paddle.y - left_paddle.VEL >= 0:  # if the w key is pressed
         left_paddle.move(up=True)  # moves the left paddle up
@@ -113,6 +134,8 @@ def main():
 
         keys = pygame.key.get_pressed()  # gets all the keys that are pressed
         handle_paddle_movement(keys, left_paddle, right_paddle)
+        ball.move()
+        handle_collision(ball, left_paddle, right_paddle)
     pygame.quit()
 
 
