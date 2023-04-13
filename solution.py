@@ -10,6 +10,10 @@ FPS = 60  # sets the fps of the game
 WIDTH, HEIGHT = 700, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))  # sets the size of the window
 BALL_RADIUS = 7
+# sets the font of the score
+SCORE_FONT = pygame.font.Font("fonts/neon-80s/Neon.ttf", 30)
+# SCORE_FONT = pygame.font.SysFont("comicsans", 50)
+
 pygame.display.set_caption("Pong!")  # sets the title of the window
 
 PADDLE_HEIGHT, PADDLE_WIDTH = 100, 20
@@ -20,8 +24,8 @@ class Paddle:
     VEL = 4
 
     def __init__(self, x, y, width, height):  # initializes the paddle
-        self.x = x
-        self.y = y
+        self.x = self.original_x = x
+        self.y = self.original_y = y
         self.width = width
         self.height = height
 
@@ -35,14 +39,18 @@ class Paddle:
         else:
             self.y += self.VEL  # downward movement adds to the velocity, moves the paddle down
 
+    def reset(self):
+        self.x = self.original_x
+        self.y = self.original_y
+
 
 class Ball:
     MAX_VEL = 5
     COLOR = GREEN
 
     def __init__(self, x, y, radius, color):
-        self.x = x
-        self.y = y
+        self.x = self.original_x = x
+        self.y = self.original_y = y
         self.radius = radius
         self.x_vel = self.MAX_VEL
         self.y_vel = 0
@@ -54,9 +62,26 @@ class Ball:
         self.x += self.x_vel
         self.y += self.y_vel
 
+    def reset(self):
+        self.x = self.original_x
+        self.y = self.original_y
+        self.y_vel = 0
+        self.x_vel *= -1  # changes the direction of the ball on reset
 
-def draw_window(win, paddles, ball):  # draws the window and all the objects in the window
-    win.fill(BLACK)  # fills the window with blac
+
+# draws the window and all the objects in the window
+def draw_window(win, paddles, ball, left_score, right_score):
+    win.fill(BLACK)  # fills the window with black
+    # renders the left score text, anti-aliasing, and color
+    left_score_text = SCORE_FONT.render(f"{left_score}", 1, WHITE)
+    right_score_text = SCORE_FONT.render(f"{right_score}", 1, WHITE)
+
+    # blits the left score text to the window
+    win.blit(left_score_text, (WIDTH//4 - left_score_text.get_width()//2, 20))
+    # blits the right score text to the window
+    win.blit(right_score_text, (WIDTH * (3/4) -
+             right_score_text.get_width()//2, 20))
+
     for paddle in paddles:
         paddle.draw(win)
 
@@ -133,9 +158,14 @@ def main():
 
     ball = Ball(WIDTH // 2, HEIGHT // 2, BALL_RADIUS, GREEN)
 
+    left_score = 0
+
+    right_score = 0
+
     while run:  # main loop that runs the game
         clock.tick(FPS)
-        draw_window(WIN, [left_paddle, right_paddle], ball)
+        draw_window(WIN, [left_paddle, right_paddle],
+                    ball, left_score, right_score)
 
         for (event) in pygame.event.get():  # loops through all the events that happen in the game
             if event.type == pygame.QUIT:  # if the event is the user clicking the x button and closes the game
@@ -146,6 +176,15 @@ def main():
         handle_paddle_movement(keys, left_paddle, right_paddle)
         ball.move()
         handle_collision(ball, left_paddle, right_paddle)
+
+        if ball.x < 0:
+            right_score += 1
+            ball.reset()
+
+        elif ball.x > WIDTH:
+            left_score += 1
+            ball.reset()
+
     pygame.quit()
 
 
